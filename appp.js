@@ -6,6 +6,7 @@ const filter = document.querySelector('#filter');
 form.addEventListener('submit', addList);
 function addList(e) {
     if (task.value !== '') {
+
         const li = document.createElement('li');
         const link = document.createElement('a');
         li.className = 'collection-item';
@@ -17,10 +18,25 @@ function addList(e) {
         ul.appendChild(li);
     }
 
+    storeTaskInLs(task.value);
     task.value = '';
 
     e.preventDefault();
 }
+
+function storeTaskInLs(tas) {
+    let taskss;
+    if (localStorage.getItem('tasks') === null) {
+        taskss = [];
+    } else {
+        taskss = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    taskss.push(tas);
+
+    localStorage.setItem('tasks', JSON.stringify(taskss));
+}
+
 
 ul.addEventListener('click', remove);
 
@@ -32,7 +48,7 @@ function remove(e) {
             e.target.parentElement.parentElement.remove();
         }
     }
-} 
+}
 
 
 
@@ -57,4 +73,29 @@ function filtered(e) {
             } else {
                 task.style.display = 'none';
             }
-        });}
+        });
+}
+document.addEventListener('DOMContentLoaded', getTasks);
+
+//get tasks from ls
+function getTasks() {
+    let taskss;
+    if (localStorage.getItem('tasks') === null) {
+        taskss = [];
+    } else {
+        taskss = JSON.parse(localStorage.getItem('tasks'));
+    }
+
+    taskss.forEach(function (tasks) {
+
+        const li = document.createElement('li');
+        const link = document.createElement('a');
+        li.className = 'collection-item';
+        li.innerText = tasks;
+        link.className = 'delete-item secondary-content delete';
+        link.innerHTML = '<i class="fa fa-remove"></i>';
+        link.id = 'delete-li';
+        li.appendChild(link);
+        ul.appendChild(li);
+    });
+}
